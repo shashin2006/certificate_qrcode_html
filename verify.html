@@ -47,7 +47,7 @@
   const certificateId = params.get('id');
   const token = params.get('token');
 
-  fetch(`http://192.168.0.4:5000/verify/${certificateId}?token=${token}`)
+  fetch(`https://certificate-qrcode-backend.onrender.com/verify/${certificateId}?token=${token}`)
     .then(res => res.json())
     .then(data => {
       const statusDiv = document.getElementById("status");
@@ -76,4 +76,5 @@
 </script>
 
 </body>
+
 </html>
