@@ -117,8 +117,19 @@
         document.getElementById("modalImage").src = imageUrl;
 
         // Set download link
-        document.getElementById("downloadBtn").href =
-          `${BACKEND_URL}/download/${certificateId}`;
+        fetch(`${BACKEND_URL}/certificate-image/${certificateId}`)
+          .then(res => res.json())
+          .then(imgData => {
+        
+            const imageUrl = imgData.imageUrl;
+        
+            // Preview
+            document.getElementById("certificatePreview").src = imageUrl;
+            document.getElementById("modalImage").src = imageUrl;
+        
+            // Download (direct Cloudinary link)
+            document.getElementById("downloadBtn").href = imageUrl;
+          });
 
         detailsDiv.classList.remove("hidden");
       }
@@ -143,4 +154,5 @@
 
 </body>
 </html>
+
 
