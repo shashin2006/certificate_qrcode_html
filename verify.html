@@ -8,7 +8,7 @@
 
 <body class="bg-gradient-to-br from-blue-50 to-gray-100 min-h-screen flex items-center justify-center">
 
-  <div class="bg-white shadow-2xl rounded-2xl p-10 w-full max-w-lg text-center">
+  <div class="bg-white shadow-2xl rounded-2xl p-10 w-full max-w-2xl text-center">
 
     <h1 class="text-3xl font-bold mb-6 text-gray-800">
       Certificate Verification
@@ -19,6 +19,7 @@
     </div>
 
     <div id="details" class="mt-6 space-y-3 text-left hidden">
+
       <div class="bg-gray-50 p-4 rounded-lg">
         <p class="text-sm text-gray-500">Name</p>
         <p id="name" class="text-lg font-medium text-gray-800"></p>
@@ -38,18 +39,58 @@
         <p class="text-sm text-gray-500">Department</p>
         <p id="department" class="text-lg font-medium text-gray-800"></p>
       </div>
+
+      <!-- Certificate Preview -->
+      <div class="mt-6 text-center">
+        <p class="text-md font-semibold mb-2">Certificate Preview</p>
+        <img id="certificatePreview"
+             class="rounded-xl shadow-lg cursor-pointer mx-auto w-full max-w-md border hover:scale-105 transition"
+             src=""
+             alt="Certificate Preview">
+      </div>
+
+      <!-- Download Button -->
+      <div class="mt-6 text-center">
+        <a id="downloadBtn"
+           class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-700 transition"
+           href="#"
+           download>
+          Download Certificate
+        </a>
+      </div>
+
     </div>
 
   </div>
 
+  <!-- Modal -->
+  <div id="modal"
+       class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center">
+
+    <div class="relative max-w-5xl w-full p-4">
+      <button onclick="closeModal()"
+              class="absolute top-4 right-4 text-white text-3xl font-bold">
+        &times;
+      </button>
+
+      <img id="modalImage"
+           class="w-full rounded-lg shadow-2xl"
+           src="">
+    </div>
+  </div>
+
 <script>
+
+  const BACKEND_URL = "https://certificate-qrcode-backend-1.onrender.com";
+
   const params = new URLSearchParams(window.location.search);
   const certificateId = params.get('id');
   const token = params.get('token');
 
-  fetch(`https://certificate-qrcode-backend-1.onrender.com/verify/${certificateId}?token=${token}`)
+  fetch(`${BACKEND_URL}/verify/${certificateId}?token=${token}`)
     .then(res => res.json())
     .then(data => {
+
       const statusDiv = document.getElementById("status");
       const detailsDiv = document.getElementById("details");
 
@@ -58,6 +99,7 @@
         statusDiv.className = "text-red-600 font-bold text-xl";
         detailsDiv.classList.add("hidden");
       } else {
+
         statusDiv.innerHTML = "✅ Certificate Verified";
         statusDiv.className = "text-green-600 font-bold text-xl";
 
@@ -66,6 +108,15 @@
         document.getElementById("event").innerText = data.event;
         document.getElementById("department").innerText = data.department;
 
+        // Set preview image
+        const imageUrl = `${BACKEND_URL}/certificate-image/${certificateId}`;
+        document.getElementById("certificatePreview").src = imageUrl;
+        document.getElementById("modalImage").src = imageUrl;
+
+        // Set download link
+        document.getElementById("downloadBtn").href =
+          `${BACKEND_URL}/download/${certificateId}`;
+
         detailsDiv.classList.remove("hidden");
       }
     })
@@ -73,9 +124,19 @@
       document.getElementById("status").innerHTML = "⚠️ Server Error";
       document.getElementById("status").className = "text-yellow-600 font-bold text-xl";
     });
+
+  // Modal logic
+  document.getElementById("certificatePreview").onclick = function() {
+    document.getElementById("modal").classList.remove("hidden");
+    document.getElementById("modal").classList.add("flex");
+  }
+
+  function closeModal() {
+    document.getElementById("modal").classList.add("hidden");
+    document.getElementById("modal").classList.remove("flex");
+  }
+
 </script>
 
 </body>
-
 </html>
-
