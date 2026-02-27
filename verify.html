@@ -90,7 +90,7 @@
   const certificateId = params.get('id');
   const token = params.get('token');
 
-  fetch(`${BACKEND_URL}/verify/${certificateId}?token=${token}`)
+  fetch(`${BACKEND_URL}/verify?id=/${certificateId}?token=${token}`)
     .then(res => res.json())
     .then(data => {
 
@@ -154,5 +154,6 @@
 
 </body>
 </html>
+
 
 
